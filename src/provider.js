@@ -21,7 +21,6 @@ module.exports = {
    * @return {array}
    */
   getSuggestions (request) {
-    console.log(this.isTailwindProject);
     if (!this.isTailwindProject) {
       return [];
     }
