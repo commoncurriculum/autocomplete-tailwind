@@ -15,7 +15,7 @@
   },
   "scripts": {
     "build": "node script/build.js",
-    "test": "semistandard -v --global atom | snazzy && tape test/*.js | tap-spec"
+    "test": "semistandard -v --global atom | snazzy"
   },
   "keywords": [
     "autocomplete",
@@ -30,9 +30,7 @@
   "devDependencies": {
     "json-stringify-pretty-compact": "^2.0.0",
     "semistandard": "^13.0.1",
-    "snazzy": "^8.0.0",
-    "tap-spec": "^5.0.0",
-    "tape": "^4.10.1"
+    "snazzy": "^8.0.0"
   },
   "providedServices": {
     "autocomplete.provider": {
