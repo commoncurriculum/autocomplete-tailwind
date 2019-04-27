@@ -15,7 +15,7 @@
   },
   "scripts": {
     "build": "node script/build.js",
-    "test": "semistandard -v | snazzy && tape test/*.js | tap-spec"
+    "test": "semistandard -v --global atom | snazzy && tape test/*.js | tap-spec"
   },
   "keywords": [
     "autocomplete",

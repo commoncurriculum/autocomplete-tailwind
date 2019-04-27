@@ -61,5 +61,5 @@ module.exports = {
     }
 
     return suggestions;
-  },
+  }
 };

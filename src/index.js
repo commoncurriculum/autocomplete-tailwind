@@ -7,12 +7,12 @@ module.exports = {
   /**
   * @type {File}
   */
-  pkg,
+  pkg: null,
 
   /**
    * @type {CompositeDisposable}
    */
-  subscriptions,
+  subscriptions: null,
 
   /**
    * Bootstrap and activate the package.
@@ -99,7 +99,6 @@ module.exports = {
   getProvider () {
     return provider;
   },
-
 
   /**
    * Dispose and deactivate the package.
