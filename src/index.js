@@ -1,24 +1,116 @@
 'use babel';
 
-const CompletionProvider = require('./completion-provider');
+const { CompositeDisposable, File } = require('atom');
+const provider = require('./provider');
 
-class AutocompleteTailwind {
-  constructor () {
-    this.completionProvider = null;
-  }
+module.exports = {
+  /**
+  * @type {File}
+  */
+  pkg,
 
+  /**
+   * @type {CompositeDisposable}
+   */
+  subscriptions,
+
+  /**
+   * Bootstrap and activate the package.
+   *
+   * @return {void}
+   */
   activate () {
-    this.completionProvider = new CompletionProvider();
-  }
+    this.subscriptions = new CompositeDisposable();
 
-  deactivate() {
-    this.completionProvider.deactivate();
-    this.completionProvider = null;
-  }
+    this.pkg = new File(atom.project.resolvePath('./package.json'));
 
-  getCompletionProvider () {
-    return this.completionProvider;
+    if (this.pkg.existsSync()) {
+      this.isTailwindListedAsDependency();
+
+      this.subscriptions.add(this.pkg.onDidChange(this.handleDidChange));
+      this.subscriptions.add(this.pkg.onDidDelete(this.handleDidDelete));
+    } else {
+      this.subscriptions.add(atom.project.onDidChangeFiles(this.handleDidChangeFiles));
+    }
+  },
+
+  /**
+   * Check if tailwindcss package is listed as a dependency in the package.json
+   * file.
+   *
+   * @return {void}
+   */
+  handleDidChange () {
+    this.isTailwindListedAsDependency();
+  },
+
+  /**
+   * Stop autocompletion when package.json file is removed.
+   *
+   * @return {void}
+   */
+  handleDidDelete () {
+    provider.isTailwindProject = false;
+  },
+
+  /**
+   * Check if the package.json file was created or renamed to package.json.
+   *
+   * @param {object} events
+   *
+   * @return {void}
+   */
+  handleDidChangeFiles (events) {
+    for (const event of events) {
+      if (event.path !== this.pkg.path) {
+        continue;
+      }
+
+      if (event.action === 'renamed' || event.action === 'created') {
+        this.isTailwindListedAsDependency();
+      }
+    }
+  },
+
+  /**
+   * Validate tailwindcss package dependency.
+   *
+   * @return {void}
+   */
+  async isTailwindListedAsDependency () {
+    try {
+      const pkg = this.pkg.read();
+
+      const { dependencies, devDependencies } = JSON.parse(pkg);
+
+      const packages = Object.assign(dependencies, devDependencies);
+
+      provider.isTailwindProject = packages.hasOwnProperty('tailwindcss');
+    } catch (error) {
+      provider.isTailwindProject = false;
+    }
+  },
+
+  /**
+   * Return the completion provider.
+   *
+   * @return {object}
+   */
+  getProvider () {
+    return provider;
+  },
+
+
+  /**
+   * Dispose and deactivate the package.
+   *
+   * @return {void}
+   */
+  deactivate () {
+    if (this.subscriptions) {
+      this.subscriptions.dispose();
+    }
+
+    this.subscriptions = null;
   }
 };
-
-module.exports = new AutocompleteTailwind();
