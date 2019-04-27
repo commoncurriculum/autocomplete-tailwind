@@ -1,13 +1,24 @@
-'use strict';
+'use babel';
 
-const provider = require('./provider');
+const CompletionProvider = require('./completion-provider');
 
-module.exports = {
+class AutocompleteTailwind {
+  constructor () {
+    this.completionProvider = null;
+  }
+
   activate () {
-    //
-  },
+    this.completionProvider = new CompletionProvider();
+  }
 
-  getProvider () {
-    return provider;
+  deactivate() {
+    this.completionProvider.deactivate();
+    this.completionProvider = null;
+  }
+
+  getCompletionProvider () {
+    return this.completionProvider;
   }
 };
+
+module.exports = new AutocompleteTailwind();
