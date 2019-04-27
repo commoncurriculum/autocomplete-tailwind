@@ -27,16 +27,15 @@ module.exports = {
     if (this.pkg.existsSync()) {
       this.isTailwindListedAsDependency();
 
-      this.subscriptions.add(this.pkg.onDidChange(this.handleDidChange));
-      this.subscriptions.add(this.pkg.onDidDelete(this.handleDidDelete));
+      this.subscriptions.add(this.pkg.onDidChange(this.handleDidChange.bind(this)));
+      this.subscriptions.add(this.pkg.onDidDelete(this.handleDidDelete.bind(this)));
     } else {
-      this.subscriptions.add(atom.project.onDidChangeFiles(this.handleDidChangeFiles));
+      this.subscriptions.add(atom.project.onDidChangeFiles(this.handleDidChangeFiles.bind(this)));
     }
   },
 
   /**
-   * Check if tailwindcss package is listed as a dependency in the package.json
-   * file.
+   * Check if tailwindcss is listed as a dependency in the package.json file.
    *
    * @return {void}
    */
@@ -79,7 +78,7 @@ module.exports = {
    */
   async isTailwindListedAsDependency () {
     try {
-      const pkg = this.pkg.read();
+      const pkg = await this.pkg.read();
 
       const { dependencies, devDependencies } = JSON.parse(pkg);
 
