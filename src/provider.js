@@ -3,7 +3,7 @@
 const completions = require('./completions.json');
 
 module.exports = {
-  selector: '.string.quoted, .source.pug .constant.language.js, source.css, source.css.scss, source.css.less, .css, .scss, .property-name.scss',
+  selector: '.string.quoted, .source.pug .constant.language.js, source.css, source.css.scss, source.css.less, .css, .scss, .entity.scss',
 
   getSuggestions (request) {
     const { prefix, bufferPosition, editor, scopeDescriptor } = request;
