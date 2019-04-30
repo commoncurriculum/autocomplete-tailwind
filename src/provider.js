@@ -3,7 +3,7 @@
 const completions = require('./completions.json');
 
 module.exports = {
-  selector: '.string.quoted, .source.pug .constant.language.js, .source.css, .source.sass, source.css.postcss',
+  selector: '.string.quoted, .source.pug .constant.language.js, .source.css, .source.css.scss, .source.sass, source.css.postcss',
 
   getSuggestions (request) {
     const { prefix, bufferPosition, editor, scopeDescriptor } = request;
@@ -15,7 +15,14 @@ module.exports = {
     const { scopes } = scopeDescriptor;
     const line = editor.getTextInRange([[bufferPosition.row, 0], bufferPosition]);
 
-    if (!line.match(/class|className/i) && !scopes.includes('source.pug')) {
+    if (
+      !line.match(/class|className/i) &&
+      !scopes.includes("source.pug") &&
+      !scopes.includes("source.css") &&
+      !scopes.includes("source.css.scss") &&
+      !scopes.includes("source.sass") &&
+      !scopes.includes("source.css.postcss")
+    ) {
       return [];
     }
 
